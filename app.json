@@ -13,7 +13,7 @@
       "supportsTablet": true,
       "backgroundColor": "#000",
       "bundleIdentifier": "com.waqqasali.NetflixClone",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./ios/GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +21,7 @@
         "backgroundColor": "#000"
       },
       "package": "com.waqqasali.NetflixClone",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./android/app/google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -53,6 +53,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c80da78e-0e91-41f4-9361-edac5f3330b1"
+      }
     }
   }
 }

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "566143624325",
+    "project_id": "my-expo-app-10",
+    "storage_bucket": "my-expo-app-10.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566143624325:android:c61832cb386f644913f5ec",
+        "android_client_info": {
+          "package_name": "com.waqqasali.NetflixClone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566143624325-8km86gal03sebac19843ej5du01sicf1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.waqqasali.NetflixClone",
+            "certificate_hash": "3e9fc1d61bb62a6e1e2c80f33cb279fb5b1a9ea4"
+          }
+        },
+        {
+          "client_id": "566143624325-dqgcg6cie7rhpp8a5obk97nhe2551kk0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6YUwFelQxo3128oQBlgIn8MCr2Y3SiJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566143624325-dqgcg6cie7rhpp8a5obk97nhe2551kk0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "566143624325-nbvj3alfh5smdfkmc4ifqpohlpa3qtjp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.waqqasali.NetflixClone"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

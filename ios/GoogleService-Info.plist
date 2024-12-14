@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>809433289147-2rj581vi46iadaucphfr9a3j5p6pfp1k.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.809433289147-2rj581vi46iadaucphfr9a3j5p6pfp1k</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBMt_qOHZw3ohwfZJACTQyheJLymZ61eWw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>809433289147</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.waqqasali.Netflix</string>
+	<key>PROJECT_ID</key>
+	<string>my-expo-app1-d5eac</string>
+	<key>STORAGE_BUCKET</key>
+	<string>my-expo-app1-d5eac.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:809433289147:ios:96e6a2268dddc810b7749e</string>
+</dict>
+</plist>

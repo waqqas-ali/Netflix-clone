@@ -6,7 +6,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { initializeApp } from '@firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Profile from '@/app/(tabs)/Profile'
+import  Home  from '@/app/(tabs)/Home'
 import Signup from '@/app/(tabs)/Signup';
 
 const firebaseConfig = {
@@ -85,7 +85,7 @@ const Login = (props) => {
         }
       };
       if (user) {
-        return <Profile user={user} onLogout={handleSignOut} />;
+        return <Home user={user} onLogout={handleSignOut} />;
       }
       if (loading) {
         return (

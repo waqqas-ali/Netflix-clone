@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import { initializeApp } from '@firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Profile from '@/app/(tabs)/Profile'
+import Home from '@/app/(tabs)/Home'
 
 const firebaseConfig = {
     apiKey: "AIzaSyCeA1GnMQvVpkQm9NzI_dqrjROjVYASgN8",
@@ -40,32 +40,32 @@ const Signup = (props) => {
       }, []);
     
       const handleAuthentication = async () => {
-        // try {
-        //   if (user) {
-        //     // If the user is already authenticated, log them out
-        //     await signOut(auth);
-        //     await AsyncStorage.removeItem('user'); // Remove user data from AsyncStorage
-        //     setUser(null);
-        //     console.log('User logged out successfully!');
-        //   } else {
-        //     // Sign in or sign up based on the current screen
-        //     if (isLogin) {
-        //       await signInWithEmailAndPassword(auth, email, password);
-        //       const currentUser = auth.currentUser;
-        //       setUser(currentUser);
-        //       await AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
-        //       console.log('User signed in successfully!');
-        //     } else {
-        //       await createUserWithEmailAndPassword(auth, email, password);
-        //       const currentUser = auth.currentUser;
-        //       setUser(currentUser);
-        //       await AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
-        //       console.log('User created successfully!');
-        //     }
-        //   }
-        // } catch (error) {
-        //   console.error('Authentication error:', error.message);
-        // }
+        try {
+          if (user) {
+            // If the user is already authenticated, log them out
+            await signOut(auth);
+            await AsyncStorage.removeItem('user'); // Remove user data from AsyncStorage
+            setUser(null);
+            console.log('User logged out successfully!');
+          } else {
+            // Sign in or sign up based on the current screen
+            if (isLogin) {
+              await signInWithEmailAndPassword(auth, email, password);
+              const currentUser = auth.currentUser;
+              setUser(currentUser);
+              await AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
+              console.log('User signed in successfully!');
+            } else {
+              await createUserWithEmailAndPassword(auth, email, password);
+              const currentUser = auth.currentUser;
+              setUser(currentUser);
+              await AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
+              console.log('User created successfully!');
+            }
+          }
+        } catch (error) {
+          console.error('Authentication error:', error.message);
+        }
       
         setLoading(true); // Start loading
         try {
@@ -90,7 +90,7 @@ const Signup = (props) => {
         }
       };
       if (user) {
-        return <Profile user={user} onLogout={handleSignOut} />;
+        return <Home user={user} onLogout={handleSignOut} />;
       }
       if (loading) {
         return (

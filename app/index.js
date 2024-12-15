@@ -1,11 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
+import {} from 'react-native'
 import React from 'react'
 import { NavigationContainer, NavigationIndependentTree } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '@/app/(tabs)/Login'
 import Signup from '@/app/(tabs)/Signup'
-import Profile from '@/app/(tabs)/Profile'
-import fake from '@/app/(tabs)/fake'
+import  Home from '@/app/(tabs)/Home'
 
 
 const Stack = createNativeStackNavigator();
@@ -13,11 +12,10 @@ const index = () => {
   return (
     <NavigationIndependentTree>
       <NavigationContainer>
-        <Stack.Navigator>
-          {/* <Stack.Screen name='fake' component={fake}/> */}
+        <Stack.Navigator initialRouteName='Login' screenOptions={{headerShown : false}}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name='Signup' component={Signup}/>
-          <Stack.Screen name='Profile' component={Profile}/>
+          <Stack.Screen name='Home' component={Home}/>
         </Stack.Navigator>
       </NavigationContainer>
     </NavigationIndependentTree>

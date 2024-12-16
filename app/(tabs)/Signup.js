@@ -50,33 +50,34 @@ const Signup = (props) => {
           } else {
             // Sign in or sign up based on the current screen
             if (isLogin) {
-              await signInWithEmailAndPassword(auth, email, password);
+              await createUserWithEmailAndPassword(auth, email, password);
               const currentUser = auth.currentUser;
               setUser(currentUser);
               await AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
               console.log('User signed in successfully!');
             } else {
-              await createUserWithEmailAndPassword(auth, email, password);
+              await signInWithEmailAndPassword(auth, email, password);
               const currentUser = auth.currentUser;
               setUser(currentUser);
               await AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
               console.log('User created successfully!');
             }
           }
-        } catch (error) {
+        } 
+        catch (error) {
           console.error('Authentication error:', error.message);
         }
       
-        setLoading(true); // Start loading
-        try {
-          await createUserWithEmailAndPassword(auth, email, password);
-          Alert.alert('Success', 'Account created successfully!');
-        //   navigation.navigate('Profile'); // Navigate to login screen after signup
-        } catch (error) {
-          Alert.alert('Error', error.message);
-        } finally {
-          setLoading(false); // Stop loading
-        }
+        // setLoading(true); // Start loading
+        // try {
+        //   await createUserWithEmailAndPassword(auth, email, password);
+        //   Alert.alert('Success', 'Account created successfully!');
+        // //   navigation.navigate('Profile'); // Navigate to login screen after signup
+        // } catch (error) {
+        //   Alert.alert('Error', error.message);
+        // } finally {
+        //   setLoading(false); // Stop loading
+        // }
       };
 
       const handleSignOut = async () => {

@@ -7,7 +7,6 @@ import Signup from '@/app/(tabs)/Signup'
 import  Home from '@/app/(tabs)/Home'
 // import Profile from '@/app/(tabs)/Profile'
 
-
 const Stack = createNativeStackNavigator();
 const index = () => {
   return (

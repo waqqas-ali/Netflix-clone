@@ -85,7 +85,7 @@ const Signup = (props) => {
           await signOut(auth);
           await AsyncStorage.removeItem('user'); // Remove user data from AsyncStorage
           setUser(null); // Clear user state
-          console.log('User signed out');
+          console.log('User signed out2');
         } catch (error) {
           console.error('Sign-out error:', error.message);
         }

@@ -1,0 +1,1 @@
+node_modules/expo-modules-core/android/build/intermediates/cxx/Debug/3l2j364r/obj/**/*.so filter=lfs diff=lfs merge=lfs -text

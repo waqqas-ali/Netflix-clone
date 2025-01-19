@@ -1,89 +1,90 @@
 // import React, { useState, useEffect } from 'react';
-// import { View, Text, FlatList, ActivityIndicator, Image, StyleSheet, TouchableOpacity, Alert, Dimensions } from 'react-native';
-
-// // Import the API call function
-// import { getUpcomingMovies } from '../../APIs/Network';  // Ensure this file exists in your project structure
+// import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, TouchableOpacity, TextInput, Button } from 'react-native';
+// import axios from 'axios';
+// import { useNavigation } from '@react-navigation/native';
 
 // const Profile = () => {
-//   const [movies, setMovies] = useState([]); // Store movies data
-//   const [loading, setLoading] = useState(true); // Loading state
-//   const [error, setError] = useState(null); // Error state
-//   const [numColumns, setNumColumns] = useState(2); // Default to 2 columns
+//   const [shows, setShows] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState(null);
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const navigation = useNavigation();
 
-//   // Fetch movie data when the component mounts
-//   useEffect(() => {
-//     const fetchMovies = async () => {
-//       const { success, data, status } = await getUpcomingMovies();
+//   // Function to fetch data based on search query
+//   const fetchShows = async (query) => {
+//     if (!query) return; // Prevent unnecessary fetch if search query is empty
 
-//       if (success) {
-//         setMovies(data); // Update state with API data
-//       } else {
-//         setError('Failed to load movies.');
-//       }
+//     setLoading(true);
+//     setError(null); // Reset error state before each fetch attempt
+
+//     try {
+//       const response = await axios.get(`https://api.tvmaze.com/search/shows?q=${query}`);
+//       setShows(response.data); // Store shows data
+//     } catch (err) {
+//       setError('Failed to load shows. Please try again.');
+//     } finally {
 //       setLoading(false);
-//     };
+//     }
+//   };
 
-//     fetchMovies(); // Call the function to fetch data
+//   // Debounce to handle search input changes and prevent frequent API calls
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       fetchShows(searchQuery);
+//     }, 500); // Delay of 500ms after user stops typing
 
-//     // Adjust the number of columns based on screen width
-//     const updateLayout = () => {
-//       const screenWidth = Dimensions.get('window').width;
-//       if (screenWidth > 600) {
-//         setNumColumns(3); // 3 columns for larger screens
-//       } else {
-//         setNumColumns(2); // 2 columns for smaller screens
-//       }
-//     };
+//     return () => clearTimeout(timer); // Clear timeout on component unmount or when searchQuery changes
+//   }, [searchQuery]);
 
-//     updateLayout(); // Call it initially to set the correct column count
-//     Dimensions.addEventListener('change', updateLayout); // Add listener for screen resizing
-
-//     return () => {
-//       Dimensions.removeEventListener('change', updateLayout); // Cleanup listener
-//     };
-//   }, []);
-
-//   // Render loading, error, or the movies list
-//   if (loading) {
-//     return (
-//       <View style={styles.centered}>
-//         <ActivityIndicator size="large" color="#0000ff" />
-//         <Text style={styles.loadingText}>Loading...</Text>
-//       </View>
-//     );
-//   }
-
+//   // Error State UI
 //   if (error) {
 //     return (
 //       <View style={styles.centered}>
 //         <Text style={styles.errorText}>{error}</Text>
+//         <Button title="Retry" onPress={() => fetchShows(searchQuery)} />
+//       </View>
+//     );
+//   }
+//   // Empty Results Handling
+//   if (shows.length === 0 && searchQuery) {
+//     return (
+//       <View style={styles.centered}>
+//         <Text>No shows found for "{searchQuery}".</Text>
 //       </View>
 //     );
 //   }
 
 //   return (
 //     <View style={styles.container}>
-//       {/* <Text style={styles.title}>Top 250 Movies</Text> */}
+//       {/* Search Input */}
+//       <TextInput
+//         style={styles.searchInput}
+//         placeholder="Search for shows..."
+//         value={searchQuery}
+//         onChangeText={setSearchQuery}
+//       />
+
+//       {/* FlatList for Displaying Shows */}
 //       <FlatList
-//         key={numColumns} // Force re-render when numColumns changes
-//         data={movies}
-//         numColumns={numColumns} // Use the dynamically set number of columns
+//         data={shows}
+//         keyExtractor={(item) => item.show.id.toString()}
+//         numColumns={2}
 //         renderItem={({ item }) => (
-//           <View style={styles.movieItem}>
-//             <TouchableOpacity onPress={() => alert(`Title: ${item?.title || 'Unknown Title'}`)}>
-//               <Image 
-//                 source={{ uri: item?.image || 'https://via.placeholder.com/100x150' }} 
-//                 style={styles.moviePoster}
-//               />
+//           <View style={styles.item}>
+//             <TouchableOpacity onPress={() => navigation.navigate('DetailScreen', { movie: item })}>
+//               {item.show.image && (
+//                 <Image source={{ uri: item.show.image.medium }} style={styles.image} />
+//               )}
 //             </TouchableOpacity>
-//             <View style={styles.movieDetails}>
-//               <Text style={styles.movieTitle}>{item?.title || 'Unknown Title'}</Text>
-//               <Text>Year: {item?.year || 'N/A'}</Text>
-//               <Text>IMDb Rating: {item?.imdbRating || 'N/A'}</Text>
-//             </View>
+//             <Text style={styles.title}>{item.show.name}</Text>
+//             <Text style={styles.year}>
+//               {item.show.premiered ? new Date(item.show.premiered).getFullYear() : 'N/A'}
+//             </Text>
+//             <Text style={styles.rating}>
+//               IMDB Rating: {item.show.rating.average || 'N/A'}
+//             </Text>
 //           </View>
 //         )}
-//         keyExtractor={(item, index) => index.toString()}
 //       />
 //     </View>
 //   );
@@ -92,51 +93,56 @@
 // const styles = StyleSheet.create({
 //   container: {
 //     flex: 1,
-//     padding: 10,
-//     backgroundColor: '#fff',
+//     paddingTop: 20,
+//     paddingHorizontal: 15,
 //   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//     marginBottom: 20,
-//   },
-//   movieItem: {
-//     flex: 1,
-//     margin: 10,
-//     backgroundColor: '#f9f9f9',
-//     borderRadius: 5,
+//   searchInput: {
+//     height: 40,
+//     borderColor: '#ccc',
 //     borderWidth: 1,
-//     borderColor: '#ddd',
-//     alignItems: 'center', // Center the content horizontally
-//     paddingBottom: 10, // Add some space below the text
-//   },
-//   moviePoster: {
-//     width: 120,
-//     height: 180,
-//     borderRadius: 5,
-//     marginBottom: 10, // Space between image and text
-//   },
-//   movieDetails: {
-//     alignItems: 'center', // Center the text below the image
-//   },
-//   movieTitle: {
+//     borderRadius: 8,
+//     marginBottom: 20,
+//     paddingLeft: 10,
 //     fontSize: 16,
-//     fontWeight: 'bold',
-//     marginBottom: 5, // Space between title and other text
-//   },
-//   loadingText: {
-//     marginTop: 10,
-//     fontSize: 16,
-//   },
-//   errorText: {
-//     fontSize: 16,
-//     color: 'red',
 //   },
 //   centered: {
 //     flex: 1,
 //     justifyContent: 'center',
 //     alignItems: 'center',
+//   },
+//   item: {
+//     margin: 10,
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#f9f9f9',
+//     borderRadius: 8,
+//     padding: 10,
+//   },
+//   image: {
+//     width: 150,
+//     height: 225,
+//     borderRadius: 8,
+//   },
+//   title: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//     marginTop: 10,
+//     textAlign: 'center',
+//   },
+//   year: {
+//     fontSize: 14,
+//     color: '#777',
+//     textAlign: 'center',
+//   },
+//   rating: {
+//     fontSize: 14,
+//     color: '#ff9800',
+//     textAlign: 'center',
+//   },
+//   errorText: {
+//     color: 'red',
+//     marginBottom: 10,
 //   },
 // });
 
@@ -144,75 +150,103 @@
 
 
 
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';  // Import useNavigation hook
 
-// Import the API call function
-import { getUpcomingMovies } from '../../APIs/Network';  // Ensure this file exists in your project structure
+
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, TouchableOpacity, TextInput, Button } from 'react-native';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const Profile = () => {
-  const navigation = useNavigation(); // Get navigation object
-  const [movies, setMovies] = useState([]); // Store movies data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [shows, setShows] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigation = useNavigation();
 
-  // Fetch movie data when the component mounts
-  useEffect(() => {
-    const fetchMovies = async () => {
-      const { success, data, status } = await getUpcomingMovies();
+  // Function to fetch data based on search query
+  const fetchShows = async (query) => {
+    if (!query) return; // Prevent unnecessary fetch if search query is empty
 
-      if (success) {
-        setMovies(data); // Update state with API data
-      } else {
-        setError('Failed to load movies.');
-      }
+    setLoading(true);
+    setError(null); // Reset error state before each fetch attempt
+
+    try {
+      const response = await axios.get(`https://api.tvmaze.com/search/shows?q=${query}`);
+      setShows(response.data); // Store shows data
+    } catch (err) {
+      setError('Failed to load shows. Please try again.');
+    } finally {
       setLoading(false);
-    };
+    }
+  };
 
-    fetchMovies(); // Call the function to fetch data
-  }, []);
+  // Debounce to handle search input changes and prevent frequent API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchShows(searchQuery);
+    }, 500); // Delay of 500ms after user stops typing
 
-  // Render loading, error, or the movies list
-  if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  }
+    return () => clearTimeout(timer); // Clear timeout on component unmount or when searchQuery changes
+  }, [searchQuery]);
 
+  // Error State UI
   if (error) {
     return (
       <View style={styles.centered}>
         <Text style={styles.errorText}>{error}</Text>
+        <Button title="Retry" onPress={() => fetchShows(searchQuery)} />
+      </View>
+    );
+  }
+
+  // Empty Results Handling with Search Input
+  if (shows.length === 0 && searchQuery) {
+    return (
+      <View style={styles.centered}>
+        <Text>No shows found for "{searchQuery}".</Text>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Try another search..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Top 250 Movies</Text>
+      {/* Search Input */}
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search for shows..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
+      {/* FlatList for Displaying Shows */}
       <FlatList
-        data={movies}
-        numColumns={2} // Display two items per row (2 columns)
+        data={shows}
+        keyExtractor={(item) => item.show.id.toString()}
+        numColumns={2}
         renderItem={({ item }) => (
-          <View style={styles.movieItem}>
+          <View style={styles.item}>
             <TouchableOpacity onPress={() => navigation.navigate('DetailScreen', { movie: item })}>
-              <Image 
-                source={{ uri: item?.image || 'https://via.placeholder.com/100x150' }} 
-                style={styles.moviePoster}
-              />
+              {item.show.image && (
+                <Image source={{ uri: item.show.image.medium }} style={styles.image} />
+              )}
             </TouchableOpacity>
-            <View style={styles.movieDetails}>
-              <Text style={styles.movieTitle}>{item?.title || 'Unknown Title'}</Text>
-              <Text>Year: {item?.year || 'N/A'}</Text>
-              <Text>IMDb Rating: {item?.imdbRating || 'N/A'}</Text>
-            </View>
+            <Text style={styles.title}>{item.show.name}</Text>
+            <Text style={styles.year}>
+              {item.show.premiered ? new Date(item.show.premiered).getFullYear() : 'N/A'}
+            </Text>
+            <Text style={styles.rating}>
+              IMDB Rating: {item.show.rating.average || 'N/A'}
+            </Text>
           </View>
         )}
-        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );
@@ -221,52 +255,60 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#fff',
+    paddingTop: 20,
+    paddingHorizontal: 15,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  movieItem: {
-    flex: 1,
-    margin: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 5,
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
     borderWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center', // Center the content horizontally
-    paddingBottom: 10, // Add some space below the text
-  },
-  moviePoster: {
-    width: 120,
-    height: 180,
-    borderRadius: 5,
-    marginBottom: 10, // Space between image and text
-  },
-  movieDetails: {
-    alignItems: 'center', // Center the text below the image
-  },
-  movieTitle: {
+    borderRadius: 8,
+    marginBottom: 20,
+    paddingLeft: 10,
     fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5, // Space between title and other text
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-  },
-  errorText: {
-    fontSize: 16,
-    color: 'red',
   },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  item: {
+    margin: 10,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    padding: 10,
+  },
+  image: {
+    width: 150,
+    height: 225,
+    borderRadius: 8,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  year: {
+    fontSize: 14,
+    color: '#777',
+    textAlign: 'center',
+  },
+  rating: {
+    fontSize: 14,
+    color: '#ff9800',
+    textAlign: 'center',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
 });
 
 export default Profile;
+
+
+

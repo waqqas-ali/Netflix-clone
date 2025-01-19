@@ -1,143 +1,149 @@
-// import React from 'react';
-// import { View, Text, Image, StyleSheet, Button, TouchableOpacity, Alert } from 'react-native';
-
-// const DetailScreen = ({ route, navigation }) => {
-//   const { movie } = route.params; // Get the movie data passed from the Profile screen
-
-//   const handlePlayPress = () => {
-//     Alert.alert('Play Button Pressed', `Playing trailer for ${movie?.title}`);
-//     // Here you can integrate a media player or open a trailer URL
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <Image 
-//         source={{ uri: movie?.image || 'https://via.placeholder.com/400x300' }} 
-//         style={styles.movieImage}
-//       />
-//       <Text style={styles.movieTitle}>{movie?.title}</Text>
-//       <Text style={styles.movieDescription}>{movie?.description || 'No description available.'}</Text>
-//       <TouchableOpacity style={styles.playButton} onPress={handlePlayPress}>
-//         <Text style={styles.playButtonText}>▶ Play</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//   },
-//   movieImage: {
-//     width: '100%',
-//     height: 300,
-//     resizeMode: 'contain',
-//     borderRadius: 5,
-//     marginBottom: 20,
-//   },
-//   movieTitle: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     marginBottom: 10,
-//   },
-//   movieDescription: {
-//     fontSize: 16,
-//     textAlign: 'center',
-//     marginBottom: 20,
-//   },
-//   playButton: {
-//     backgroundColor: '#ff5c5c',
-//     padding: 15,
-//     borderRadius: 5,
-//     alignItems: 'center',
-//   },
-//   playButtonText: {
-//     color: '#fff',
-//     fontSize: 18,
-//   },
-// });
-
-// export default DetailScreen;
-
-
-
-
-import React, { useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Video } from 'expo-av'; // Import the Video component from expo-av
 
 const DetailScreen = ({ route, navigation }) => {
+  // Retrieve the passed show data from navigation parameters
   const { movie } = route.params;
 
-  // Disable the drawer when navigating to the DetailScreen
-  useEffect(() => {
-    // Lock the drawer to prevent it from being opened
-    navigation.setOptions({
-      drawerLockMode: 'locked-closed', // Lock drawer on this screen
-    });
+  // State to handle whether the video should be shown
+  const [videoVisible, setVideoVisible] = useState(false);
 
-    // Cleanup when leaving the DetailScreen (re-enable the drawer)
-    return () => {
-      navigation.setOptions({
-        drawerLockMode: 'unlocked', // Re-enable the drawer when leaving the screen
-      });
-    };
-  }, [navigation]);
-
+  // Placeholder for Play button action (show video player)
   const handlePlayPress = () => {
-    Alert.alert('Play Button Pressed', `Playing trailer for ${movie?.title}`);
-    // You can integrate a media player or open a trailer URL here
+    setVideoVisible(true); // Show the video when "Play" button is pressed
   };
 
   return (
-    <View style={styles.container}>
-      <Image 
-        source={{ uri: movie?.image || 'https://via.placeholder.com/400x300' }} 
-        style={styles.movieImage}
-      />
-      <Text style={styles.movieTitle}>{movie?.title}</Text>
-      <Text style={styles.movieDescription}>{movie?.description || 'No description available.'}</Text>
-      <TouchableOpacity style={styles.playButton} onPress={handlePlayPress}>
-        <Text style={styles.playButtonText}>▶ Play</Text>
-      </TouchableOpacity>
-    </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.imageContainer}>
+        {/* Display the image of the show */}
+        {movie.show.image ? (
+          <Image source={{ uri: movie.show.image.original }} style={styles.image} />
+        ) : (
+          <Text>No image available</Text>
+        )}
+
+        {/* Show Video player if videoVisible is true */}
+        {videoVisible && (
+          <View style={styles.videoContainer}>
+            <Video
+              source={{ uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' }} // Video URL
+              rate={1.0}
+              volume={1.0}
+              isMuted={false}
+              shouldPlay
+              useNativeControls
+              isLooping
+              style={styles.video}
+            />
+          </View>
+        )}
+      </View>
+
+      <View style={styles.detailsContainer}>
+        {/* Show the Title */}
+        <Text style={styles.title}>{movie.show.name}</Text>
+
+        {/* Show the Year */}
+        <Text style={styles.year}>
+          {movie.show.premiered ? new Date(movie.show.premiered).getFullYear() : 'N/A'}
+        </Text>
+
+        {/* Show IMDb Rating */}
+        {movie.show.rating.average ? (
+          <Text style={styles.rating}>IMDB Rating: {movie.show.rating.average}</Text>
+        ) : (
+          <Text style={styles.rating}>IMDB Rating: N/A</Text>
+        )}
+
+        {/* Show the Summary/Description */}
+        {movie.show.summary ? (
+          <Text style={styles.description}>{movie.show.summary.replace(/<[^>]+>/g, '')}</Text>
+        ) : (
+          <Text style={styles.description}>No description available</Text>
+        )}
+
+        {/* Play Button */}
+        <TouchableOpacity style={styles.playButton} onPress={handlePlayPress}>
+          <Text style={styles.playButtonText}>Play</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 15,
   },
-  movieImage: {
+  imageContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  image: {
     width: '100%',
     height: 300,
     resizeMode: 'contain',
-    borderRadius: 5,
-    marginBottom: 20,
+    borderRadius: 10,
   },
-  movieTitle: {
+  videoContainer: {
+    position: 'absolute', // Makes the video overlay the image
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  video: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  detailsContainer: {
+    marginTop: 20,
+  },
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  movieDescription: {
-    fontSize: 16,
     textAlign: 'center',
-    marginBottom: 20,
+  },
+  year: {
+    fontSize: 16,
+    color: '#777',
+    textAlign: 'center',
+    marginVertical: 5,
+  },
+  rating: {
+    fontSize: 16,
+    color: '#ff9800',
+    textAlign: 'center',
+    marginVertical: 5,
+  },
+  description: {
+    fontSize: 14,
+    color: '#333',
+    marginTop: 15,
+    lineHeight: 22,
   },
   playButton: {
-    backgroundColor: '#ff5c5c',
-    padding: 15,
-    borderRadius: 5,
+    marginTop: 20,
+    backgroundColor: '#007bff',
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 30,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   playButtonText: {
-    color: '#fff',
     fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

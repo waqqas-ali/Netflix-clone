@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StatusBar, StyleSheet, TextInput, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, StatusBar, StyleSheet, TextInput, ActivityIndicator, Alert } from 'react-native'
 import React, { useState , useEffect } from 'react'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { initializeApp } from '@firebase/app';
@@ -46,7 +46,7 @@ const Signup = (props) => {
             await signOut(auth);
             await AsyncStorage.removeItem('user'); // Remove user data from AsyncStorage
             setUser(null);
-            console.log('User logged out successfully!');
+            Alert.alert('User logged out successfully!')
           } else {
             // Sign in or sign up based on the current screen
             if (isLogin) {
@@ -54,30 +54,19 @@ const Signup = (props) => {
               const currentUser = auth.currentUser;
               setUser(currentUser);
               await AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
-              console.log('User signed in successfully!');
+              Alert.alert('User signed in successfully!')
             } else {
               await signInWithEmailAndPassword(auth, email, password);
               const currentUser = auth.currentUser;
               setUser(currentUser);
               await AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
-              console.log('User created successfully!');
+              Alert.alert('User created successfully!')
             }
           }
         } 
         catch (error) {
-          console.error('Authentication error:', error.message);
+          Alert.alert('Please fill the information')
         }
-      
-        // setLoading(true); // Start loading
-        // try {
-        //   await createUserWithEmailAndPassword(auth, email, password);
-        //   Alert.alert('Success', 'Account created successfully!');
-        // //   navigation.navigate('Profile'); // Navigate to login screen after signup
-        // } catch (error) {
-        //   Alert.alert('Error', error.message);
-        // } finally {
-        //   setLoading(false); // Stop loading
-        // }
       };
 
       const handleSignOut = async () => {
@@ -85,9 +74,9 @@ const Signup = (props) => {
           await signOut(auth);
           await AsyncStorage.removeItem('user'); // Remove user data from AsyncStorage
           setUser(null); // Clear user state
-          console.log('User signed out2');
+          Alert.alert('User signed out')
         } catch (error) {
-          console.error('Sign-out error:', error.message);
+          Alert.alert('Sign out error:', error.message)
         }
       };
       if (user) {
@@ -126,7 +115,7 @@ const Signup = (props) => {
                 <TextInput style={styles.Input}
                     value={password}
                     onChangeText={setPassword}
-                    placeholder="Password"
+                    placeholder="Create Password"
                     placeholderTextColor={'grey'}
                     autoCapitalize="none"
                     secureTextEntry={true} 
@@ -142,15 +131,7 @@ const Signup = (props) => {
                 <TouchableOpacity style={styles.Button} onPress={handleAuthentication}>
                     <Text style={styles.Text}>Register</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.Button}>
-                    <Text style={styles.Text}>Sign in with Facebook</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.Button}>
-                    <Text style={styles.Text}>Sign in with Google</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.Button}>
-                    <Text style={styles.Text}>Sign in with Apple</Text>
-                </TouchableOpacity>
+             
             </View>
         </View>
     )
@@ -165,6 +146,8 @@ const styles = StyleSheet.create({
     Textin: {
         color: 'red',
         fontSize: 35,
+        paddingTop : 200,
+        paddingBottom : 10
     },
     Input: {
         borderBottomWidth: 1,

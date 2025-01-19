@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
 import { Video } from 'expo-av'; // Import the Video component from expo-av
+// import { platform } from 'OS';
 
 const DetailScreen = ({ route, navigation }) => {
   // Retrieve the passed show data from navigation parameters
@@ -78,6 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 15,
+    backgroundColor : 'black'
   },
   imageContainer: {
     position: 'relative',
@@ -86,7 +88,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 300,
+    // height: 300,
+    height : Platform.OS === 'ios' ? 300 : 200,
     resizeMode: 'contain',
     borderRadius: 10,
   },
@@ -99,6 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    
   },
   video: {
     width: '100%',
@@ -112,6 +116,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    color : 'white'
   },
   year: {
     fontSize: 16,
@@ -127,7 +132,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: '#333',
+    color: 'gray',
     marginTop: 15,
     lineHeight: 22,
   },

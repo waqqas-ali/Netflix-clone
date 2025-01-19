@@ -34,7 +34,8 @@ const Login = (props) => {
                 }
                 setLoading(false); // Stop loading after checking AsyncStorage
             } catch (error) {
-                console.error('Error loading user from AsyncStorage:', error);
+                // console.error('Error loading user from AsyncStorage:', error);
+                Alert.alert('Error loading user from AsyncStorage:');
                 setLoading(false);
             }
         };
@@ -60,7 +61,8 @@ const Login = (props) => {
                 await signOut(auth);
                 setUser(null);
                 AsyncStorage.removeItem('user');
-                console.log('User logged out successfully!');
+                // console.warn('User logged out successfully!');
+                Alert.alert('User logged out successfully!')
             } else {
                 // Sign in or sign up based on the current screen
                 if (isLogin) {
@@ -68,18 +70,17 @@ const Login = (props) => {
                     const currentUser = auth.currentUser;
                     setUser(currentUser);
                     AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
-                    console.log('User signed in successfully!');
+                    Alert.alert('User login successfully!');
                 } else {
                     await createUserWithEmailAndPassword(auth, email, password);
                     const currentUser = auth.currentUser;
                     setUser(currentUser);
                     AsyncStorage.setItem('user', JSON.stringify(currentUser)); // Store user data in AsyncStorage
-                    console.log('User created successfully!');
+                    Alert.alert('User created successfully!')
                 }
             }
         } catch (error) {
-            console.error('Authentication error:', error.message);
-            Alert.alert("Authentication Error", error.message); // Display error to the user
+            Alert.alert("Password and Email ID is incorrect", error.message); // Display error to the user
         }
     };
 
@@ -88,9 +89,8 @@ const Login = (props) => {
             await signOut(auth);
             setUser(null);
             AsyncStorage.removeItem('user');
-            console.log('User signed out successfully');
+            Alert.alert('User signed out successfully!')
         } catch (error) {
-            console.error('Sign-out error:', error.message);
             Alert.alert("Sign Out Error", error.message); // Display error to the user
         }
     };
@@ -105,7 +105,7 @@ const Login = (props) => {
             await sendPasswordResetEmail(auth, email);
             Alert.alert('Success', 'Password reset email sent. Please check your inbox.');
         } catch (error) {
-            console.error('Password reset error:', error.message);
+            // console.error('Password reset error:', error.message);
             Alert.alert('Error', error.message); // Display error if something goes wrong
         }
     };
@@ -148,15 +148,6 @@ const Login = (props) => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.TouchableOpacity2} onPress={handleForgotPassword}>
                 <Text style={styles.TextButton2}>Forgot Password?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.facebook}>
-                <Text style={styles.TextFacebook}>Sign in with Facebook</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.facebook}>
-                <Text style={styles.TextFacebook}>Sign in with Google</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.facebook}>
-                <Text style={styles.TextFacebook}>Sign in with Apple</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.Create} onPress={() => props.navigation.navigate('Signup')}>
                 <Text style={styles.CreateText}>Don't have an Account? Create one</Text>

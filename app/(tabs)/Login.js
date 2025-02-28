@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import Netflix from '@/assets/images/Net2.png';
+import Netflix from '@/assets/images/net2.png';
 import { initializeApp } from '@firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from '@firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
